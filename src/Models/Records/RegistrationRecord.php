@@ -108,6 +108,15 @@ class RegistrationRecord extends Record {
     public array $replacedInvoices = [];
 
     /**
+     * Identificador que especifica si tiene minoración de la base imponible por la concesión de cupones,
+     * bonificaciones o descuentos cuando solo se expide el original de la factura.
+     *
+     * @field Cupon
+     */
+    #[Assert\Type('boolean')]
+    public bool $couponReductionFlag = false;
+
+    /**
      * Desglose de la factura
      *
      * @var BreakdownDetails[]
@@ -350,6 +359,10 @@ class RegistrationRecord extends Record {
                     $idOtroElement->add('sum1:ID', $recipient->value);
                 }
             }
+        }
+
+        if ($this->couponReductionFlag !== null) {
+            $recordElement->add('sum1:Cupon', $this->couponReductionFlag ? 'S' : 'N');
         }
 
         $desgloseElement = $recordElement->add('sum1:Desglose');
