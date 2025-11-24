@@ -11,6 +11,7 @@ use josemmo\Verifactu\Models\Records\ForeignFiscalIdentifier;
 use josemmo\Verifactu\Models\Records\ForeignIdType;
 use josemmo\Verifactu\Models\Records\InvoiceIdentifier;
 use josemmo\Verifactu\Models\Records\InvoiceType;
+use josemmo\Verifactu\Models\Records\IssuedByThirdPartyOrRecipient;
 use josemmo\Verifactu\Models\Records\OperationType;
 use josemmo\Verifactu\Models\Records\RegimeType;
 use josemmo\Verifactu\Models\Records\RegistrationRecord;
@@ -315,6 +316,11 @@ final class RegistrationRecordTest extends TestCase {
         $record->invoiceType = InvoiceType::Simplificada;
         $record->operationDate = new DateTimeImmutable('2025-05-15');
         $record->description = 'Factura simplificada de prueba';
+        $record->simplifiedInvoiceArt7273 = true;
+        $record->invoiceWithoutRecipientIdentificationArt61d = true;
+        $record->largeAmountFlag = false;
+        $record->issuedByThirdPartyOrRecipient = IssuedByThirdPartyOrRecipient::ThirdParty;
+        $record->thirdParty = new FiscalIdentifier('Antonio García Pérez', '00000000A');
         $record->breakdown[0] = new BreakdownDetails();
         $record->breakdown[0]->taxType = TaxType::IVA;
         $record->breakdown[0]->regimeType = RegimeType::C01;
@@ -366,6 +372,14 @@ final class RegistrationRecordTest extends TestCase {
                 <sum1:TipoFactura>F2</sum1:TipoFactura>
                 <sum1:FechaOperacion>15-05-2025</sum1:FechaOperacion>
                 <sum1:DescripcionOperacion>Factura simplificada de prueba</sum1:DescripcionOperacion>
+                <sum1:FacturaSimplificadaArt7273>S</sum1:FacturaSimplificadaArt7273>
+                <sum1:FacturaSinIdentifDestinatarioArt61d>S</sum1:FacturaSinIdentifDestinatarioArt61d>
+                <sum1:Macrodato>N</sum1:Macrodato>
+                <sum1:EmitidaPorTerceroODestinatario>T</sum1:EmitidaPorTerceroODestinatario>
+                <sum1:Tercero>
+                    <sum1:NombreRazon>Antonio Garc&#xED;a P&#xE9;rez</sum1:NombreRazon>
+                    <sum1:NIF>00000000A</sum1:NIF>
+                </sum1:Tercero>
                 <sum1:Desglose>
                     <sum1:DetalleDesglose>
                         <sum1:Impuesto>01</sum1:Impuesto>
