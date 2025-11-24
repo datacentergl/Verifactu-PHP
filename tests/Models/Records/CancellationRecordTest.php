@@ -66,6 +66,7 @@ final class CancellationRecordTest extends TestCase {
         $record->invoiceId->invoiceNumber = '12345679/G34';
         $record->invoiceId->issueDate = new DateTimeImmutable('2024-01-01');
         $record->externalRef = 'Referencia YYYYY';
+        $record->priorRejection = true;
         $record->previousInvoiceId = new InvoiceIdentifier();
         $record->previousInvoiceId->issuerId = 'A00000000';
         $record->previousInvoiceId->invoiceNumber = '12345679/G34';
@@ -102,6 +103,7 @@ final class CancellationRecordTest extends TestCase {
                     <sum1:FechaExpedicionFacturaAnulada>01-01-2024</sum1:FechaExpedicionFacturaAnulada>
                 </sum1:IDFactura>
                 <sum1:RefExterna>Referencia YYYYY</sum1:RefExterna>
+                <sum1:RechazoPrevio>S</sum1:RechazoPrevio>
                 <sum1:Encadenamiento>
                     <sum1:RegistroAnterior>
                     <sum1:IDEmisorFactura>A00000000</sum1:IDEmisorFactura>
