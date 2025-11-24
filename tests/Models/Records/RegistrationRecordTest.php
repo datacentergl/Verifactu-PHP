@@ -321,6 +321,7 @@ final class RegistrationRecordTest extends TestCase {
         $record->largeAmountFlag = false;
         $record->issuedByThirdPartyOrRecipient = IssuedByThirdPartyOrRecipient::ThirdParty;
         $record->thirdParty = new FiscalIdentifier('Antonio García Pérez', '00000000A');
+        $record->couponReductionFlag = true;
         $record->breakdown[0] = new BreakdownDetails();
         $record->breakdown[0]->taxType = TaxType::IVA;
         $record->breakdown[0]->regimeType = RegimeType::C01;
@@ -380,6 +381,7 @@ final class RegistrationRecordTest extends TestCase {
                     <sum1:NombreRazon>Antonio Garc&#xED;a P&#xE9;rez</sum1:NombreRazon>
                     <sum1:NIF>00000000A</sum1:NIF>
                 </sum1:Tercero>
+                <sum1:Cupon>S</sum1:Cupon>
                 <sum1:Desglose>
                     <sum1:DetalleDesglose>
                         <sum1:Impuesto>01</sum1:Impuesto>
