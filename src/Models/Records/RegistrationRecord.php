@@ -56,6 +56,46 @@ class RegistrationRecord extends Record {
     public string $description;
 
     /**
+     * Factura simplificada Articulo 7.2 Y 7.3 RD 1619/2012
+     *
+     * @field FacturaSimplificadaArt7273
+     */
+    #[Assert\Type('boolean')]
+    public bool $simplifiedInvoiceArt7273 = false;
+
+    /**
+     * Factura sin identificación destinatario artículo 6.1.d) RD 1619/2012
+     *
+     * @field FacturaSinIdentifDestinatarioArt61d
+     */
+    #[Assert\Type('boolean')]
+    public bool $invoiceWithoutRecipientIdentificationArt61d = false;
+
+    /**
+     * Identificador que especifica aquellas facturas con base o importe de la factura
+     * superior al umbral especificado
+     *
+     * @field Macrodato
+     */
+    #[Assert\Type('boolean')]
+    public bool $largeAmountFlag = false;
+
+    /**
+     * Identificador que especifica si la factura ha sido expedida materialmente
+     * por un tercero o por el destinatario
+     *
+     * @field EmitidaPorTerceroODestinatario
+     */
+    public ?IssuedByThirdPartyOrRecipient $issuedByThirdPartyOrRecipient = null;
+
+    /**
+     * Tercero que expide la factura.
+     *
+     * @field Tercero
+     */
+    public FiscalIdentifier|ForeignFiscalIdentifier|null $thirdParty = null;
+
+    /**
      * Destinatarios de la factura
      *
      * @var array<FiscalIdentifier | ForeignFiscalIdentifier>
@@ -335,6 +375,38 @@ class RegistrationRecord extends Record {
         }
 
         $recordElement->add('sum1:DescripcionOperacion', $this->description);
+
+        if ($this->simplifiedInvoiceArt7273 !== null) {
+            $recordElement->add('sum1:FacturaSimplificadaArt7273', $this->simplifiedInvoiceArt7273 ? 'S' : 'N');
+        }
+
+        if ($this->invoiceWithoutRecipientIdentificationArt61d !== null) {
+            $recordElement->add(
+                'sum1:FacturaSinIdentifDestinatarioArt61d',
+                $this->invoiceWithoutRecipientIdentificationArt61d ? 'S' : 'N'
+            );
+        }
+
+        if ($this->largeAmountFlag !== null) {
+            $recordElement->add('sum1:Macrodato', $this->largeAmountFlag ? 'S' : 'N');
+        }
+
+        if ($this->issuedByThirdPartyOrRecipient !== null) {
+            $recordElement->add('sum1:EmitidaPorTerceroODestinatario', $this->issuedByThirdPartyOrRecipient->value);
+        }
+
+        if ($this->thirdParty !== null) {
+            $terceroElement = $recordElement->add('sum1:Tercero');
+            $terceroElement->add('sum1:NombreRazon', $this->thirdParty->name);
+            if ($this->thirdParty instanceof FiscalIdentifier) {
+                $terceroElement->add('sum1:NIF', $this->thirdParty->nif);
+            } else {
+                $terceroIdOtroElement = $terceroElement->add('sum1:IDOtro');
+                $terceroIdOtroElement->add('sum1:CodigoPais', $this->thirdParty->country);
+                $terceroIdOtroElement->add('sum1:IDType', $this->thirdParty->type->value);
+                $terceroIdOtroElement->add('sum1:ID', $this->thirdParty->value);
+            }
+        }
 
         if (count($this->recipients) > 0) {
             $destinatariosElement = $recordElement->add('sum1:Destinatarios');
