@@ -65,5 +65,10 @@ class CancellationRecord extends Record {
         if ($this->withoutPriorRecord) {
             $recordElement->add('sum1:SinRegistroPrevio', 'S');
         }
+
+        // This is not actually a custom field:
+        if ($this->priorRejection) {
+            $recordElement->add('sum1:RechazoPrevio', 'S');
+        }
     }
 }

@@ -309,6 +309,8 @@ final class RegistrationRecordTest extends TestCase {
         $record->invoiceId->invoiceNumber = 'PRUEBA-0002';
         $record->invoiceId->issueDate = new DateTimeImmutable('2025-06-02');
         $record->issuerName = 'Perico de los Palotes, S.A.';
+        $record->isCorrection = true;
+        $record->priorRejection = true;
         $record->invoiceType = InvoiceType::Simplificada;
         $record->operationDate = new DateTimeImmutable('2025-05-15');
         $record->description = 'Factura simplificada de prueba';
@@ -357,7 +359,8 @@ final class RegistrationRecordTest extends TestCase {
                     <sum1:FechaExpedicionFactura>02-06-2025</sum1:FechaExpedicionFactura>
                 </sum1:IDFactura>
                 <sum1:NombreRazonEmisor>Perico de los Palotes, S.A.</sum1:NombreRazonEmisor>
-                <sum1:Subsanacion>N</sum1:Subsanacion>
+                <sum1:Subsanacion>S</sum1:Subsanacion>
+                <sum1:RechazoPrevio>S</sum1:RechazoPrevio>
                 <sum1:TipoFactura>F2</sum1:TipoFactura>
                 <sum1:FechaOperacion>15-05-2025</sum1:FechaOperacion>
                 <sum1:DescripcionOperacion>Factura simplificada de prueba</sum1:DescripcionOperacion>

@@ -301,6 +301,12 @@ class RegistrationRecord extends Record {
 
         $recordElement->add('sum1:NombreRazonEmisor', $this->issuerName);
         $recordElement->add('sum1:Subsanacion', $this->isCorrection ? 'S' : 'N');
+
+        // This is not actually a custom field:
+        if ($this->priorRejection) {
+            $recordElement->add('sum1:RechazoPrevio', 'S');
+        }
+
         $recordElement->add('sum1:TipoFactura', $this->invoiceType->value);
 
         if ($this->correctiveType !== null) {
