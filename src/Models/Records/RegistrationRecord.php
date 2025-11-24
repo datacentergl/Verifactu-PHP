@@ -99,6 +99,14 @@ class RegistrationRecord extends Record {
     public ?string $correctedTaxAmount = null;
 
     /**
+     * Cuota recargo de equivalencia de la factura.
+     *
+     * @field ImporteRectificacion/CuotaRecargoRectificado
+     */
+    #[Assert\Regex(pattern: '/^-?\d{1,12}\.\d{2}$/')]
+    public ?string $correctedSurchargeAmount = null;
+
+    /**
      * Listado de facturas sustituidas
      *
      * @var InvoiceIdentifier[]
@@ -328,6 +336,9 @@ class RegistrationRecord extends Record {
             $importeRectificacionElement = $recordElement->add('sum1:ImporteRectificacion');
             $importeRectificacionElement->add('sum1:BaseRectificada', $this->correctedBaseAmount);
             $importeRectificacionElement->add('sum1:CuotaRectificada', $this->correctedTaxAmount);
+            if ($this->correctedSurchargeAmount !== null) {
+                $importeRectificacionElement->add('sum1:CuotaRecargoRectificado', $this->correctedSurchargeAmount);
+            }
         }
 
         if ($this->operationDate !== null) {
