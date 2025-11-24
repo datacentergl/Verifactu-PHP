@@ -62,6 +62,11 @@ class CancellationRecord extends Record {
         $idFacturaElement->add('sum1:NumSerieFacturaAnulada', $this->invoiceId->invoiceNumber);
         $idFacturaElement->add('sum1:FechaExpedicionFacturaAnulada', $this->invoiceId->issueDate->format('d-m-Y'));
 
+        // This is not actually a custom field:
+        if ($this->externalRef !== null) {
+            $recordElement->add('sum1:RefExterna', $this->externalRef);
+        }
+
         if ($this->withoutPriorRecord) {
             $recordElement->add('sum1:SinRegistroPrevio', 'S');
         }

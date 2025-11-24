@@ -22,6 +22,14 @@ abstract class Record extends Model {
     public InvoiceIdentifier $invoiceId;
 
     /**
+     * Dato adicional de contenido libre para facilitar la identificación de la factura
+     *
+     * @field RefExterna
+     */
+    #[Assert\Length(max: 60)]
+    public ?string $externalRef = null;
+
+    /**
      * ID de factura del registro anterior
      *
      * @field Encadenamiento/RegistroAnterior

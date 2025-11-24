@@ -299,6 +299,11 @@ class RegistrationRecord extends Record {
         $idFacturaElement->add('sum1:NumSerieFactura', $this->invoiceId->invoiceNumber);
         $idFacturaElement->add('sum1:FechaExpedicionFactura', $this->invoiceId->issueDate->format('d-m-Y'));
 
+        // This is not actually a custom field:
+        if ($this->externalRef !== null) {
+            $recordElement->add('sum1:RefExterna', $this->externalRef);
+        }
+
         $recordElement->add('sum1:NombreRazonEmisor', $this->issuerName);
         $recordElement->add('sum1:Subsanacion', $this->isCorrection ? 'S' : 'N');
         $recordElement->add('sum1:TipoFactura', $this->invoiceType->value);
