@@ -165,6 +165,7 @@ class RegistrationRecord extends Record {
                 return;
             }
             $expectedTotalBaseAmount += $details->baseAmount;
+            $expectedTotalBaseAmount += $details->baseAmountAtCost ?? 0;
             $expectedTotalTaxAmount += $details->taxAmount;
             $expectedTotalTaxAmount += $details->surchargeAmount ?? 0;
         }
@@ -365,6 +366,9 @@ class RegistrationRecord extends Record {
                 $detalleDesgloseElement->add('sum1:TipoImpositivo', $breakdownDetails->taxRate);
             }
             $detalleDesgloseElement->add('sum1:BaseImponibleOimporteNoSujeto', $breakdownDetails->baseAmount);
+            if ($breakdownDetails->baseAmountAtCost !== null) {
+                $detalleDesgloseElement->add('sum1:BaseImponibleACoste', $breakdownDetails->baseAmountAtCost);
+            }
             if ($breakdownDetails->taxAmount !== null) {
                 $detalleDesgloseElement->add('sum1:CuotaRepercutida', $breakdownDetails->taxAmount);
             }

@@ -62,6 +62,15 @@ class BreakdownDetails extends Model {
     public ?string $taxAmount = null;
 
     /**
+     * Magnitud dineraria sobre la que se aplica el tipo impositivo en régimen especial
+     * de grupos nivel avanzado.
+     *
+     * @field BaseImponibleACoste
+     */
+    #[Assert\Regex(pattern: '/^-?\d{1,12}\.\d{2}$/')]
+    public ?string $baseAmountAtCost = null;
+
+    /**
      * Porcentaje aplicado sobre la base imponible para calcular la cuota
      *
      * @field TipoRecargoEquivalencia
