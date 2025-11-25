@@ -19,7 +19,6 @@ class InvoiceSchemaVerifier {
     private readonly FiscalIdentifier $taxpayer;
     private ?FiscalIdentifier $representative = null;
     private string $schemaSum = self::NS_SUM;
-    private string $schemaSum1 = self::NS_SUM1;
 
     /**
      * Class constructor
@@ -62,18 +61,6 @@ class InvoiceSchemaVerifier {
     }
 
     /**
-     * Overwrites NS SUM 1 to allow use of local files
-     *
-     * @param string $schemaSum1 XSD file path
-     *
-     * @return $this This instance
-     */
-    public function setSchemaSum1(string $schemaSum1): static {
-        $this->schemaSum1 = $schemaSum1;
-        return $this;
-    }
-
-    /**
      * Verify invoicing records
      *
      * @param (RegistrationRecord|CancellationRecord)[] $records Invoicing records
@@ -82,8 +69,8 @@ class InvoiceSchemaVerifier {
         // Build initial request
         $xml = UXML::newInstance('soapenv:Envelope', null, [
             'xmlns:soapenv' => self::NS_SOAPENV,
-            'xmlns:sum' => $this->schemaSum,
-            'xmlns:sum1' => $this->schemaSum1
+            'xmlns:sum' => self::NS_SUM,
+            'xmlns:sum1' => self::NS_SUM1
         ]);
         $xml->add('soapenv:Header');
         $baseElement = $xml->add('soapenv:Body')->add('sum:RegFactuSistemaFacturacion');
@@ -115,7 +102,7 @@ class InvoiceSchemaVerifier {
         }
 
         $xpath = new \DOMXPath($dom);
-        $xpath->registerNamespace('sum', $this->schemaSum);
+        $xpath->registerNamespace('sum', self::NS_SUM);
 
         $node = $xpath->query('//sum:RegFactuSistemaFacturacion')->item(0);
         $payloadDoc = new \DOMDocument('1.0', 'UTF-8');
