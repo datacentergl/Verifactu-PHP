@@ -115,14 +115,14 @@ class InvoiceSchemaVerifier {
         }
 
         $xpath = new \DOMXPath($dom);
-        $xpath->registerNamespace('sum', self::NS_SUM);
+        $xpath->registerNamespace('sum', $this->schemaSum);
 
         $node = $xpath->query('//sum:RegFactuSistemaFacturacion')->item(0);
         $payloadDoc = new \DOMDocument('1.0', 'UTF-8');
         $payloadDoc->appendChild($payloadDoc->importNode($node, true));
 
         libxml_use_internal_errors(true);
-        $ok = $payloadDoc->schemaValidate(self::NS_SUM);
+        $ok = $payloadDoc->schemaValidate($this->schemaSum);
 
         if (!$ok) {
             $errors = libxml_get_errors();
