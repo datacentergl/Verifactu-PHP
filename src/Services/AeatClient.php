@@ -29,6 +29,8 @@ class AeatClient {
     private ?string $certificatePassword = null;
     private ?FiscalIdentifier $representative = null;
     private bool $isProduction = true;
+    private string $schemaSum = self::NS_SUM;
+    private string $schemaSum1 = self::NS_SUM1;
 
     /**
      * Class constructor
@@ -93,6 +95,30 @@ class AeatClient {
     }
 
     /**
+     * Overwrites NS SUM to allow use of local files
+     *
+     * @param string $schemaSum XSD file path
+     *
+     * @return $this This instance
+     */
+    public function setSchemaSum(string $schemaSum): static {
+        $this->schemaSum = $schemaSum;
+        return $this;
+    }
+
+    /**
+     * Overwrites NS SUM to allow use of local files
+     *
+     * @param string $schemaSum1 XSD file path
+     *
+     * @return $this This instance
+     */
+    public function setSchemaSum1(string $schemaSum1): static {
+        $this->schemaSum1 = $schemaSum1;
+        return $this;
+    }
+
+    /**
      * Send invoicing records
      *
      * @param (RegistrationRecord|CancellationRecord)[] $records Invoicing records
@@ -106,8 +132,8 @@ class AeatClient {
         // Build initial request
         $xml = UXML::newInstance('soapenv:Envelope', null, [
             'xmlns:soapenv' => self::NS_SOAPENV,
-            'xmlns:sum' => self::NS_SUM,
-            'xmlns:sum1' => self::NS_SUM1,
+            'xmlns:sum' => $this->schemaSum,
+            'xmlns:sum1' => $this->schemaSum1,
         ]);
         $xml->add('soapenv:Header');
         $baseElement = $xml->add('soapenv:Body')->add('sum:RegFactuSistemaFacturacion');
