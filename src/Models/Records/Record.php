@@ -30,15 +30,6 @@ abstract class Record extends Model {
     public ?string $externalRef = null;
 
     /**
-     * Indicador que especifica que se está generando un nuevo registro de facturación
-     * de alta subsanado tras haber sido rechazado en su remisión inmediatamente anterior
-     *
-     * @field RechazoPrevio
-     */
-    #[Assert\Type('boolean')]
-    public bool $priorRejection = false;
-
-    /**
      * ID de factura del registro anterior
      *
      * @field Encadenamiento/RegistroAnterior

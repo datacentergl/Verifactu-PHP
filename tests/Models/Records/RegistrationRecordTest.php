@@ -75,6 +75,54 @@ final class RegistrationRecordTest extends TestCase {
         $record->validate();
     }
 
+    public function testValidatesPriorRejection(): void {
+        $record = new RegistrationRecord();
+        $record->invoiceId = new InvoiceIdentifier();
+        $record->invoiceId->issuerId = 'A00000000';
+        $record->invoiceId->invoiceNumber = 'PRUEBA-0002';
+        $record->invoiceId->issueDate = new DateTimeImmutable('2025-06-02');
+        $record->issuerName = 'Perico de los Palotes, S.A.';
+        $record->invoiceType = InvoiceType::Simplificada;
+        $record->description = 'Factura simplificada de prueba';
+        $record->breakdown[0] = new BreakdownDetails();
+        $record->breakdown[0]->taxType = TaxType::IVA;
+        $record->breakdown[0]->regimeType = RegimeType::C01;
+        $record->breakdown[0]->operationType = OperationType::Subject;
+        $record->breakdown[0]->baseAmount = '100.00';
+        $record->breakdown[0]->taxRate = '21.00';
+        $record->breakdown[0]->taxAmount = '21.00';
+        $record->totalTaxAmount = '21.00';
+        $record->totalAmount = '121.00';
+        $record->previousInvoiceId = null;
+        $record->previousHash = null;
+        $record->hashedAt = new DateTimeImmutable('2025-06-02T20:30:40+02:00');
+        $record->hash = $record->calculateHash();
+
+        // Should pass validation
+        $record->isCorrection = true;
+        $record->isPriorRejection = false;
+        $record->validate();
+
+        // Should also pass validation
+        $record->isCorrection = true;
+        foreach ([true, null] as $priorRejectionValue) {
+            $record->isPriorRejection = $priorRejectionValue;
+            $record->validate();
+        }
+
+        // Prior rejection requires correction flag
+        foreach ([true, null] as $priorRejectionValue) {
+            $record->isCorrection = false;
+            $record->isPriorRejection = $priorRejectionValue;
+            try {
+                $record->validate();
+                $this->fail('Did not throw exception for prior rejection validation');
+            } catch (InvalidModelException $e) {
+                $this->assertStringContainsString('Record cannot be a prior rejection if it is not a correction', $e->getMessage());
+            }
+        }
+    }
+
     public function testValidatesTotalAmounts(): void {
         $record = new RegistrationRecord();
         $record->invoiceId = new InvoiceIdentifier();
@@ -312,7 +360,6 @@ final class RegistrationRecordTest extends TestCase {
         $record->externalRef = 'Referencia XXXXX';
         $record->issuerName = 'Perico de los Palotes, S.A.';
         $record->isCorrection = true;
-        $record->priorRejection = true;
         $record->invoiceType = InvoiceType::Simplificada;
         $record->operationDate = new DateTimeImmutable('2025-05-15');
         $record->description = 'Factura simplificada de prueba';
@@ -369,7 +416,6 @@ final class RegistrationRecordTest extends TestCase {
                 <sum1:RefExterna>Referencia XXXXX</sum1:RefExterna>
                 <sum1:NombreRazonEmisor>Perico de los Palotes, S.A.</sum1:NombreRazonEmisor>
                 <sum1:Subsanacion>S</sum1:Subsanacion>
-                <sum1:RechazoPrevio>S</sum1:RechazoPrevio>
                 <sum1:TipoFactura>F2</sum1:TipoFactura>
                 <sum1:FechaOperacion>15-05-2025</sum1:FechaOperacion>
                 <sum1:DescripcionOperacion>Factura simplificada de prueba</sum1:DescripcionOperacion>
