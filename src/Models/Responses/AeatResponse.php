@@ -6,6 +6,8 @@ use DateTimeInterface;
 use josemmo\Verifactu\Exceptions\AeatException;
 use josemmo\Verifactu\Models\Model;
 use josemmo\Verifactu\Models\Records\InvoiceIdentifier;
+use josemmo\Verifactu\Models\Responses\DuplicatedRecord;
+use josemmo\Verifactu\Models\Responses\DuplicatedRecordStatusType;
 use Symfony\Component\Validator\Constraints as Assert;
 use UXML\UXML;
 
@@ -50,6 +52,12 @@ class AeatResponse extends Model {
         $csvElement = $rootXml->get("{{$nsTikr}}CSV");
         if ($csvElement !== null) {
             $instance->csv = $csvElement->asText();
+        }
+
+        // Parse submitter id
+        $submitterIdElement = $rootXml->get("{{$nsTikr}}DatosPresentacion/{{$nsTik}}NIFPresentador");
+        if ($submitterIdElement !== null) {
+            $instance->submitterId = $submitterIdElement->asText();
         }
 
         // Parse submitted at timestamp
@@ -113,6 +121,24 @@ class AeatResponse extends Model {
                 $item->isCorrection = ($isCorrectionElement->asText() === 'S');
             }
 
+            // Parse prior rejection
+            $priorRejectionElement = $itemElement->get("{{$nsTikr}}Operacion/{{$nsTik}}RechazoPrevio");
+            if ($priorRejectionElement !== null) {
+                $item->priorRejection = PriorRejectionType::from($priorRejectionElement->asText());
+            }
+
+            // Parse without previous record
+            $withoutPreviousRecordElement = $itemElement->get("{{$nsTikr}}Operacion/{{$nsTik}}SinRegistroPrevio");
+            if ($withoutPreviousRecordElement !== null) {
+                $item->withoutPreviousRecord = ($withoutPreviousRecordElement->asText() === 'S');
+            }
+
+            // Parse external reference
+            $externalRefElement = $itemElement->get("{{$nsTikr}}RefExterna");
+            if ($externalRefElement !== null) {
+                $item->externalRef = $externalRefElement->asText();
+            }
+
             // Parse status
             $statusElement = $itemElement->get("{{$nsTikr}}EstadoRegistro");
             if ($statusElement !== null) {
@@ -131,6 +157,26 @@ class AeatResponse extends Model {
                 $item->errorDescription = $errorDescriptionElement->asText();
             }
 
+            // Parse duplicated record
+            $duplicatedRecordElement = $itemElement->get("{{$nsTikr}}RegistroDuplicado");
+            if ($duplicatedRecordElement !== null) {
+                $duplicatedRecordRequestIdElement = $duplicatedRecordElement->get("{{$nsTikr}}IdPeticionRegistroDuplicado");
+                $duplicatedRecordStatusElement = $duplicatedRecordElement->get("{{$nsTikr}}EstadoRegistroDuplicado");
+                if ($duplicatedRecordRequestIdElement !== null && $duplicatedRecordStatusElement !== null) {
+                    $duplicatedRecordRequestId = $duplicatedRecordRequestIdElement->asText();
+                    $duplicatedRecordStatus = DuplicatedRecordStatusType::from($duplicatedRecordStatusElement->asText());
+                    $item->duplicatedRecord = new DuplicatedRecord($duplicatedRecordRequestId, $duplicatedRecordStatus);
+                    $duplicatedRecordErrorCodeElement = $duplicatedRecordElement->get("{{$nsTikr}}CodigoErrorRegistro");
+                    if ($duplicatedRecordErrorCodeElement !== null) {
+                        $item->duplicatedRecord->errorCode = $duplicatedRecordErrorCodeElement->asText();
+                    }
+                    $duplicatedRecordErrorDescriptionElement = $duplicatedRecordElement->get("{{$nsTikr}}DescripcionErrorRegistro");
+                    if ($duplicatedRecordErrorDescriptionElement !== null) {
+                        $item->duplicatedRecord->errorDescription = $duplicatedRecordErrorDescriptionElement->asText();
+                    }
+                }
+            }
+
             $instance->items[] = $item;
         }
 
@@ -147,6 +193,14 @@ class AeatResponse extends Model {
      * @field CSV
      */
     public ?string $csv = null;
+
+    /**
+     * Número de identificación fiscal (NIF)
+     *
+     * @field DatosPresentacion/NIFPresentador
+     */
+    #[Assert\Length(exactly: 9)]
+    public ?string $submitterId = null;
 
     /**
      * Timestamp asociado a la remisión enviada

@@ -4,6 +4,7 @@ namespace josemmo\Verifactu\Tests\Models;
 use josemmo\Verifactu\Exceptions\AeatException;
 use josemmo\Verifactu\Models\Responses\AeatResponse;
 use josemmo\Verifactu\Models\Responses\ItemStatus;
+use josemmo\Verifactu\Models\Responses\PriorRejectionType;
 use josemmo\Verifactu\Models\Responses\RecordType;
 use josemmo\Verifactu\Models\Responses\ResponseStatus;
 use PHPUnit\Framework\TestCase;
@@ -39,7 +40,10 @@ final class AeatResponseTest extends TestCase {
                         <tikR:Operacion>
                             <tik:TipoOperacion>Alta</tik:TipoOperacion>
                             <tik:Subsanacion>S</tik:Subsanacion>
+                            <tik:RechazoPrevio>S</tik:RechazoPrevio>
+                            <tik:SinRegistroPrevio>S</tik:SinRegistroPrevio>
                         </tikR:Operacion>
+                        <tikR:RefExterna>EXTERNAL-REFERENCE</tikR:RefExterna>
                         <tikR:EstadoRegistro>Correcto</tikR:EstadoRegistro>
                     </tikR:RespuestaLinea>
                     <tikR:RespuestaLinea>
@@ -73,6 +77,7 @@ final class AeatResponseTest extends TestCase {
         $response = AeatResponse::from($xml);
 
         $this->assertEquals('A-86U4KHPACUMVZE', $response->csv);
+        $this->assertEquals('A00000000', $response->submitterId);
         $this->assertNotNull($response->submittedAt);
         $this->assertEquals('2025-10-13T12:34:56+02:00', $response->submittedAt->format('Y-m-d\TH:i:sP'));
         $this->assertEquals(60, $response->waitSeconds);
@@ -84,6 +89,9 @@ final class AeatResponseTest extends TestCase {
         $this->assertEquals('TEST-202510-123', $response->items[0]->invoiceId->invoiceNumber);
         $this->assertEquals('2025-10-13 00:00:00', $response->items[0]->invoiceId->issueDate->format('Y-m-d H:i:s'));
         $this->assertEquals(RecordType::Registration, $response->items[0]->recordType);
+        $this->assertEquals(true, $response->items[0]->withoutPreviousRecord);
+        $this->assertEquals(PriorRejectionType::S, $response->items[0]->priorRejection);
+        $this->assertEquals('EXTERNAL-REFERENCE', $response->items[0]->externalRef);
         $this->assertEquals(ItemStatus::Correct, $response->items[0]->status);
         $this->assertEquals(null, $response->items[0]->errorCode);
         $this->assertEquals(null, $response->items[0]->errorDescription);

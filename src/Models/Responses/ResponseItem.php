@@ -3,6 +3,7 @@ namespace josemmo\Verifactu\Models\Responses;
 
 use josemmo\Verifactu\Models\Model;
 use josemmo\Verifactu\Models\Records\InvoiceIdentifier;
+use josemmo\Verifactu\Models\Responses\DuplicatedRecord;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -38,6 +39,28 @@ class ResponseItem extends Model {
     public RecordType $recordType;
 
     /**
+     * Rechazo previo por la AEAT.
+     *
+     * @field RechazoPrevio
+     */
+    public ?PriorRejectionType $priorRejection;
+
+    /**
+     * Sin registro previo en la AEAT
+     *
+     * @field SinRegistroPrevio
+     */
+    public bool $withoutPreviousRecord;
+
+    /**
+     * Dato adicional de contenido libre para facilitar la identificación de la factura
+     *
+     * @field RefExterna
+     */
+    #[Assert\Length(max: 60)]
+    public ?string $externalRef;
+
+    /**
      * Estado del envío del registro
      *
      * @field EstadoRegistro
@@ -58,4 +81,11 @@ class ResponseItem extends Model {
      * @field DescripcionErrorRegistro
      */
     public ?string $errorDescription = null;
+
+    /**
+     * Información sobre el registro duplicado
+     *
+     * @field RegistroDuplicado
+     */
+    public ?DuplicatedRecord $duplicatedRecord = null;
 }
