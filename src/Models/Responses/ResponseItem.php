@@ -43,14 +43,14 @@ class ResponseItem extends Model {
      *
      * @field RechazoPrevio
      */
-    public ?PriorRejectionType $priorRejection;
+    public ?PriorRejectionType $priorRejection = null;
 
     /**
      * Sin registro previo en la AEAT
      *
      * @field SinRegistroPrevio
      */
-    public bool $withoutPreviousRecord;
+    public ?bool $withoutPreviousRecord = null;
 
     /**
      * Dato adicional de contenido libre para facilitar la identificación de la factura
@@ -58,7 +58,7 @@ class ResponseItem extends Model {
      * @field RefExterna
      */
     #[Assert\Length(max: 60)]
-    public ?string $externalRef;
+    public ?string $externalRef = null;
 
     /**
      * Estado del envío del registro
