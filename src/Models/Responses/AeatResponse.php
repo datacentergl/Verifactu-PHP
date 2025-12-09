@@ -160,17 +160,17 @@ class AeatResponse extends Model {
             // Parse duplicated record
             $duplicatedRecordElement = $itemElement->get("{{$nsTikr}}RegistroDuplicado");
             if ($duplicatedRecordElement !== null) {
-                $duplicatedRecordRequestIdElement = $duplicatedRecordElement->get("{{$nsTikr}}IdPeticionRegistroDuplicado");
-                $duplicatedRecordStatusElement = $duplicatedRecordElement->get("{{$nsTikr}}EstadoRegistroDuplicado");
+                $duplicatedRecordRequestIdElement = $duplicatedRecordElement->get("{{$nsTik}}IdPeticionRegistroDuplicado");
+                $duplicatedRecordStatusElement = $duplicatedRecordElement->get("{{$nsTik}}EstadoRegistroDuplicado");
                 if ($duplicatedRecordRequestIdElement !== null && $duplicatedRecordStatusElement !== null) {
                     $duplicatedRecordRequestId = $duplicatedRecordRequestIdElement->asText();
                     $duplicatedRecordStatus = DuplicatedRecordStatusType::from($duplicatedRecordStatusElement->asText());
                     $item->duplicatedRecord = new DuplicatedRecord($duplicatedRecordRequestId, $duplicatedRecordStatus);
-                    $duplicatedRecordErrorCodeElement = $duplicatedRecordElement->get("{{$nsTikr}}CodigoErrorRegistro");
+                    $duplicatedRecordErrorCodeElement = $duplicatedRecordElement->get("{{$nsTik}}CodigoErrorRegistro");
                     if ($duplicatedRecordErrorCodeElement !== null) {
                         $item->duplicatedRecord->errorCode = $duplicatedRecordErrorCodeElement->asText();
                     }
-                    $duplicatedRecordErrorDescriptionElement = $duplicatedRecordElement->get("{{$nsTikr}}DescripcionErrorRegistro");
+                    $duplicatedRecordErrorDescriptionElement = $duplicatedRecordElement->get("{{$nsTik}}DescripcionErrorRegistro");
                     if ($duplicatedRecordErrorDescriptionElement !== null) {
                         $item->duplicatedRecord->errorDescription = $duplicatedRecordErrorDescriptionElement->asText();
                     }
