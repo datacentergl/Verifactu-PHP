@@ -13,13 +13,26 @@ use josemmo\Verifactu\Models\Records\InvoiceIdentifier;
 use josemmo\Verifactu\Models\Records\InvoiceType;
 use josemmo\Verifactu\Models\Records\IssuedByThirdPartyOrRecipient;
 use josemmo\Verifactu\Models\Records\OperationType;
+use josemmo\Verifactu\Models\Records\Record;
 use josemmo\Verifactu\Models\Records\RegimeType;
 use josemmo\Verifactu\Models\Records\RegistrationRecord;
 use josemmo\Verifactu\Models\Records\TaxType;
+use josemmo\Verifactu\Tests\TestUtils;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use UXML\UXML;
 
 final class RegistrationRecordTest extends TestCase {
+    /**
+     * @return array<string,string[]> PHPUnit provider
+     */
+    public static function xmlPathsProvider(): array {
+        return [
+            'simplificada' => [__DIR__ . '/registration-record-f2.xml'],
+            'completa' => [__DIR__ . '/registration-record-f1.xml'],
+        ];
+    }
+
     public function testCalculatesHashForFirstRecord(): void {
         $record = new RegistrationRecord();
         $record->invoiceId = new InvoiceIdentifier();
@@ -350,120 +363,22 @@ final class RegistrationRecordTest extends TestCase {
         $record->validate();
     }
 
-    public function testExportsXmlElement(): void {
-        // Create record
-        $record = new RegistrationRecord();
-        $record->invoiceId = new InvoiceIdentifier();
-        $record->invoiceId->issuerId = 'A00000000';
-        $record->invoiceId->invoiceNumber = 'PRUEBA-0002';
-        $record->invoiceId->issueDate = new DateTimeImmutable('2025-06-02');
-        $record->externalRef = 'Referencia XXXXX';
-        $record->issuerName = 'Perico de los Palotes, S.A.';
-        $record->isCorrection = true;
-        $record->invoiceType = InvoiceType::Simplificada;
-        $record->operationDate = new DateTimeImmutable('2025-05-15');
-        $record->description = 'Factura simplificada de prueba';
-        $record->simplifiedInvoiceArt7273 = true;
-        $record->invoiceWithoutRecipientIdentificationArt61d = true;
-        $record->largeAmountFlag = false;
-        $record->issuedByThirdPartyOrRecipient = IssuedByThirdPartyOrRecipient::ThirdParty;
-        $record->thirdParty = new FiscalIdentifier('Antonio García Pérez', '00000000A');
-        $record->couponReductionFlag = true;
-        $record->breakdown[0] = new BreakdownDetails();
-        $record->breakdown[0]->taxType = TaxType::IVA;
-        $record->breakdown[0]->regimeType = RegimeType::C01;
-        $record->breakdown[0]->operationType = OperationType::Subject;
-        $record->breakdown[0]->baseAmount = '100.00';
-        $record->breakdown[0]->taxRate = '21.00';
-        $record->breakdown[0]->taxAmount = '21.00';
-        $record->totalTaxAmount = '21.00';
-        $record->totalAmount = '121.00';
-        $record->previousInvoiceId = new InvoiceIdentifier();
-        $record->previousInvoiceId->issuerId = 'A00000000';
-        $record->previousInvoiceId->invoiceNumber = 'PRUEBA-001';
-        $record->previousInvoiceId->issueDate = new DateTimeImmutable('2025-06-01');
-        $record->previousHash = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
-        $record->hashedAt = new DateTimeImmutable('2025-06-02T20:30:40+02:00');
-        $record->hash = $record->calculateHash();
+    #[DataProvider('xmlPathsProvider')]
+    public function testImportsAndExportsXmlElement(string $xmlPath): void {
+        // Import model
+        $modelXml = TestUtils::getXmlFile($xmlPath);
+        $record = Record::fromXml($modelXml);
+        $this->assertInstanceOf(RegistrationRecord::class, $record);
         $record->validate();
 
-        // Build computer system
-        $system = new ComputerSystem();
-        $system->vendorName = 'Perico de los Palotes, S.A.';
-        $system->vendorNif = 'A00000000';
-        $system->name = 'Test SIF';
-        $system->id = 'TS';
-        $system->version = '0.0.1';
-        $system->installationNumber = '01234';
-        $system->onlySupportsVerifactu = true;
-        $system->supportsMultipleTaxpayers = false;
-        $system->hasMultipleTaxpayers = false;
-        $system->validate();
+        // Import computer system
+        $computerSystemXml = $modelXml->get('sum1:SistemaInformatico');
+        $this->assertNotNull($computerSystemXml);
+        $computerSystem = ComputerSystem::fromXml($computerSystemXml);
 
-        // Export to XML
-        $xml = UXML::newInstance('container');
-        $record->export($xml, $system);
-        $this->assertXmlStringEqualsXmlString(<<<XML
-        <?xml version="1.0" encoding="UTF-8"?>
-        <container>
-            <sum1:RegistroAlta>
-                <sum1:IDVersion>1.0</sum1:IDVersion>
-                <sum1:IDFactura>
-                    <sum1:IDEmisorFactura>A00000000</sum1:IDEmisorFactura>
-                    <sum1:NumSerieFactura>PRUEBA-0002</sum1:NumSerieFactura>
-                    <sum1:FechaExpedicionFactura>02-06-2025</sum1:FechaExpedicionFactura>
-                </sum1:IDFactura>
-                <sum1:RefExterna>Referencia XXXXX</sum1:RefExterna>
-                <sum1:NombreRazonEmisor>Perico de los Palotes, S.A.</sum1:NombreRazonEmisor>
-                <sum1:Subsanacion>S</sum1:Subsanacion>
-                <sum1:TipoFactura>F2</sum1:TipoFactura>
-                <sum1:FechaOperacion>15-05-2025</sum1:FechaOperacion>
-                <sum1:DescripcionOperacion>Factura simplificada de prueba</sum1:DescripcionOperacion>
-                <sum1:FacturaSimplificadaArt7273>S</sum1:FacturaSimplificadaArt7273>
-                <sum1:FacturaSinIdentifDestinatarioArt61d>S</sum1:FacturaSinIdentifDestinatarioArt61d>
-                <sum1:Macrodato>N</sum1:Macrodato>
-                <sum1:EmitidaPorTerceroODestinatario>T</sum1:EmitidaPorTerceroODestinatario>
-                <sum1:Tercero>
-                    <sum1:NombreRazon>Antonio Garc&#xED;a P&#xE9;rez</sum1:NombreRazon>
-                    <sum1:NIF>00000000A</sum1:NIF>
-                </sum1:Tercero>
-                <sum1:Cupon>S</sum1:Cupon>
-                <sum1:Desglose>
-                    <sum1:DetalleDesglose>
-                        <sum1:Impuesto>01</sum1:Impuesto>
-                        <sum1:ClaveRegimen>01</sum1:ClaveRegimen>
-                        <sum1:CalificacionOperacion>S1</sum1:CalificacionOperacion>
-                        <sum1:TipoImpositivo>21.00</sum1:TipoImpositivo>
-                        <sum1:BaseImponibleOimporteNoSujeto>100.00</sum1:BaseImponibleOimporteNoSujeto>
-                        <sum1:CuotaRepercutida>21.00</sum1:CuotaRepercutida>
-                    </sum1:DetalleDesglose>
-                </sum1:Desglose>
-                <sum1:CuotaTotal>21.00</sum1:CuotaTotal>
-                <sum1:ImporteTotal>121.00</sum1:ImporteTotal>
-                <sum1:Encadenamiento>
-                    <sum1:RegistroAnterior>
-                        <sum1:IDEmisorFactura>A00000000</sum1:IDEmisorFactura>
-                        <sum1:NumSerieFactura>PRUEBA-001</sum1:NumSerieFactura>
-                        <sum1:FechaExpedicionFactura>01-06-2025</sum1:FechaExpedicionFactura>
-                        <sum1:Huella>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</sum1:Huella>
-                    </sum1:RegistroAnterior>
-                </sum1:Encadenamiento>
-                <sum1:SistemaInformatico>
-                    <sum1:NombreRazon>Perico de los Palotes, S.A.</sum1:NombreRazon>
-                    <sum1:NIF>A00000000</sum1:NIF>
-                    <sum1:NombreSistemaInformatico>Test SIF</sum1:NombreSistemaInformatico>
-                    <sum1:IdSistemaInformatico>TS</sum1:IdSistemaInformatico>
-                    <sum1:Version>0.0.1</sum1:Version>
-                    <sum1:NumeroInstalacion>01234</sum1:NumeroInstalacion>
-                    <sum1:TipoUsoPosibleSoloVerifactu>S</sum1:TipoUsoPosibleSoloVerifactu>
-                    <sum1:TipoUsoPosibleMultiOT>N</sum1:TipoUsoPosibleMultiOT>
-                    <sum1:IndicadorMultiplesOT>N</sum1:IndicadorMultiplesOT>
-                </sum1:SistemaInformatico>
-                <sum1:FechaHoraHusoGenRegistro>2025-06-02T20:30:40+02:00</sum1:FechaHoraHusoGenRegistro>
-                <sum1:TipoHuella>01</sum1:TipoHuella>
-                <sum1:Huella>4566062C5A5D7DA4E0E876C0994071CD807962629F8D3C1F33B91EDAA65B2BA1</sum1:Huella>
-            </sum1:RegistroAlta>
-        </container>
-        XML, $xml->asXML());
+        // Export model
+        $exportedXml = UXML::newInstance('container', null, ['xmlns:sum1' => Record::NS]);
+        $record->export($exportedXml, $computerSystem);
+        $this->assertXmlStringEqualsXmlString($modelXml, $exportedXml->get('sum1:RegistroAlta')?->asXML() ?? '');
     }
 }

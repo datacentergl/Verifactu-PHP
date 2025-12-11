@@ -1,6 +1,7 @@
 <?php
 namespace josemmo\Verifactu\Models\Records;
 
+use josemmo\Verifactu\Exceptions\ImportException;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use UXML\UXML;
@@ -36,6 +37,13 @@ class CancellationRecord extends Record {
     /**
      * @inheritDoc
      */
+    protected static function getRecordElementName(): string {
+        return 'RegistroAnulacion';
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function calculateHash(): string {
         // NOTE: Values should NOT be escaped as that what the AEAT says ¯\_(ツ)_/¯
         $payload  = 'IDEmisorFacturaAnulada=' . $this->invoiceId->issuerId;
@@ -63,24 +71,35 @@ class CancellationRecord extends Record {
     /**
      * @inheritDoc
      */
-    protected function getRecordElementName(): string {
-        return 'RegistroAnulacion';
+    protected function importCustomProperties(UXML $recordElement): void {
+        // Invoice ID
+        $idFacturaElement = $recordElement->get('sum1:IDFactura');
+        if ($idFacturaElement === null) {
+            throw new ImportException('Missing <sum1:IDFactura /> element');
+        }
+        $this->invoiceId = InvoiceIdentifier::fromXml($idFacturaElement);
+
+        // Flags
+        $withoutPriorRecord = $recordElement->get('sum1:SinRegistroPrevio')?->asText() ?? 'N';
+        $isPriorRejection = $recordElement->get('sum1:RechazoPrevio')?->asText() ?? 'N';
+        $this->withoutPriorRecord = ($withoutPriorRecord === 'S');
+        $this->isPriorRejection = ($isPriorRejection === 'S');
     }
 
     /**
      * @inheritDoc
      */
     protected function exportCustomProperties(UXML $recordElement): void {
+        // Invoice ID
         $idFacturaElement = $recordElement->add('sum1:IDFactura');
-        $idFacturaElement->add('sum1:IDEmisorFacturaAnulada', $this->invoiceId->issuerId);
-        $idFacturaElement->add('sum1:NumSerieFacturaAnulada', $this->invoiceId->invoiceNumber);
-        $idFacturaElement->add('sum1:FechaExpedicionFacturaAnulada', $this->invoiceId->issueDate->format('d-m-Y'));
+        $this->invoiceId->export($idFacturaElement, true);
 
         // This is not actually a custom field:
         if ($this->externalRef !== null) {
             $recordElement->add('sum1:RefExterna', $this->externalRef);
         }
 
+        // Flags
         if ($this->withoutPriorRecord) {
             $recordElement->add('sum1:SinRegistroPrevio', 'S');
         }
