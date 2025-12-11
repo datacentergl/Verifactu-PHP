@@ -286,6 +286,11 @@ class BreakdownDetails extends Model {
         // Base amount
         $element->add('sum1:BaseImponibleOimporteNoSujeto', $this->baseAmount);
 
+        // Base amount at cost
+        if ($this->baseAmountAtCost !== null) {
+            $element->add('sum1:BaseImponibleACoste', $this->baseAmountAtCost);
+        }
+
         // Tax amount
         if ($this->taxAmount !== null) {
             $element->add('sum1:CuotaRepercutida', $this->taxAmount);

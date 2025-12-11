@@ -77,7 +77,7 @@ class RegistrationRecord extends Record {
      * @field FacturaSimplificadaArt7273
      */
     #[Assert\Type('boolean')]
-    public bool $simplifiedInvoiceArt7273 = false;
+    public ?bool $simplifiedInvoiceArt7273 = null;
 
     /**
      * Factura sin identificación destinatario artículo 6.1.d) RD 1619/2012
@@ -85,7 +85,7 @@ class RegistrationRecord extends Record {
      * @field FacturaSinIdentifDestinatarioArt61d
      */
     #[Assert\Type('boolean')]
-    public bool $invoiceWithoutRecipientIdentificationArt61d = false;
+    public ?bool $invoiceWithoutRecipientIdentificationArt61d = null;
 
     /**
      * Identificador que especifica aquellas facturas con base o importe de la factura
@@ -94,7 +94,7 @@ class RegistrationRecord extends Record {
      * @field Macrodato
      */
     #[Assert\Type('boolean')]
-    public bool $largeAmountFlag = false;
+    public ?bool $largeAmountFlag = null;
 
     /**
      * Identificador que especifica si la factura ha sido expedida materialmente
@@ -178,7 +178,7 @@ class RegistrationRecord extends Record {
      * @field Cupon
      */
     #[Assert\Type('boolean')]
-    public bool $couponReductionFlag = false;
+    public ?bool $couponReductionFlag = null;
 
     /**
      * Desglose de la factura
