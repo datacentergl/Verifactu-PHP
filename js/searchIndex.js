@@ -6,6 +6,11 @@ Search.appendIndex(
             "summary": "Exception\u0020thrown\u0020by\u0020the\u0020AEAT\u0020client",
             "url": "classes/josemmo-Verifactu-Exceptions-AeatException.html"
         },                {
+            "fqsen": "\\josemmo\\Verifactu\\Exceptions\\ImportException",
+            "name": "ImportException",
+            "summary": "Exception\u0020thrown\u0020when\u0020failed\u0020to\u0020import\u0020an\u0020XML\u0020element",
+            "url": "classes/josemmo-Verifactu-Exceptions-ImportException.html"
+        },                {
             "fqsen": "\\josemmo\\Verifactu\\Exceptions\\InvalidModelException",
             "name": "InvalidModelException",
             "summary": "Exception\u0020thrown\u0020when\u0020a\u0020model\u0020class\u0020does\u0020not\u0020pass\u0020validation",
@@ -25,6 +30,16 @@ Search.appendIndex(
             "name": "ComputerSystem",
             "summary": "Computer\u0020system",
             "url": "classes/josemmo-Verifactu-Models-ComputerSystem.html"
+        },                {
+            "fqsen": "\\josemmo\\Verifactu\\Models\\ComputerSystem\u003A\u003AfromXml\u0028\u0029",
+            "name": "fromXml",
+            "summary": "Import\u0020instance\u0020from\u0020XML\u0020element",
+            "url": "classes/josemmo-Verifactu-Models-ComputerSystem.html#method_fromXml"
+        },                {
+            "fqsen": "\\josemmo\\Verifactu\\Models\\ComputerSystem\u003A\u003Aexport\u0028\u0029",
+            "name": "export",
+            "summary": "Export\u0020model\u0020to\u0020XML",
+            "url": "classes/josemmo-Verifactu-Models-ComputerSystem.html#method_export"
         },                {
             "fqsen": "\\josemmo\\Verifactu\\Models\\ComputerSystem\u003A\u003A\u0024vendorName",
             "name": "vendorName",
@@ -86,6 +101,11 @@ Search.appendIndex(
             "summary": "Detalle\u0020de\u0020desglose",
             "url": "classes/josemmo-Verifactu-Models-Records-BreakdownDetails.html"
         },                {
+            "fqsen": "\\josemmo\\Verifactu\\Models\\Records\\BreakdownDetails\u003A\u003AfromXml\u0028\u0029",
+            "name": "fromXml",
+            "summary": "Import\u0020instance\u0020from\u0020XML\u0020element",
+            "url": "classes/josemmo-Verifactu-Models-Records-BreakdownDetails.html#method_fromXml"
+        },                {
             "fqsen": "\\josemmo\\Verifactu\\Models\\Records\\BreakdownDetails\u003A\u003AvalidateRegimeType\u0028\u0029",
             "name": "validateRegimeType",
             "summary": "",
@@ -105,6 +125,11 @@ Search.appendIndex(
             "name": "validateSurchargeAmount",
             "summary": "",
             "url": "classes/josemmo-Verifactu-Models-Records-BreakdownDetails.html#method_validateSurchargeAmount"
+        },                {
+            "fqsen": "\\josemmo\\Verifactu\\Models\\Records\\BreakdownDetails\u003A\u003Aexport\u0028\u0029",
+            "name": "export",
+            "summary": "Export\u0020model\u0020to\u0020XML",
+            "url": "classes/josemmo-Verifactu-Models-Records-BreakdownDetails.html#method_export"
         },                {
             "fqsen": "\\josemmo\\Verifactu\\Models\\Records\\BreakdownDetails\u003A\u003A\u0024taxType",
             "name": "taxType",
@@ -211,6 +236,11 @@ Search.appendIndex(
             "summary": "Identificador\u0020fiscal\u0020de\u0020fuera\u0020de\u0020Espa\u00F1a",
             "url": "classes/josemmo-Verifactu-Models-Records-ForeignFiscalIdentifier.html"
         },                {
+            "fqsen": "\\josemmo\\Verifactu\\Models\\Records\\ForeignFiscalIdentifier\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "Class\u0020constructor",
+            "url": "classes/josemmo-Verifactu-Models-Records-ForeignFiscalIdentifier.html#method___construct"
+        },                {
             "fqsen": "\\josemmo\\Verifactu\\Models\\Records\\ForeignFiscalIdentifier\u003A\u003AvalidateVatNumber\u0028\u0029",
             "name": "validateVatNumber",
             "summary": "",
@@ -290,6 +320,16 @@ Search.appendIndex(
             "name": "__construct",
             "summary": "Class\u0020constructor",
             "url": "classes/josemmo-Verifactu-Models-Records-InvoiceIdentifier.html#method___construct"
+        },                {
+            "fqsen": "\\josemmo\\Verifactu\\Models\\Records\\InvoiceIdentifier\u003A\u003AfromXml\u0028\u0029",
+            "name": "fromXml",
+            "summary": "Import\u0020instance\u0020from\u0020XML\u0020element",
+            "url": "classes/josemmo-Verifactu-Models-Records-InvoiceIdentifier.html#method_fromXml"
+        },                {
+            "fqsen": "\\josemmo\\Verifactu\\Models\\Records\\InvoiceIdentifier\u003A\u003Aexport\u0028\u0029",
+            "name": "export",
+            "summary": "Export\u0020model\u0020to\u0020XML",
+            "url": "classes/josemmo-Verifactu-Models-Records-InvoiceIdentifier.html#method_export"
         },                {
             "fqsen": "\\josemmo\\Verifactu\\Models\\Records\\InvoiceIdentifier\u003A\u003Aequals\u0028\u0029",
             "name": "equals",
@@ -431,6 +471,11 @@ Search.appendIndex(
             "summary": "Base\u0020invoice\u0020record",
             "url": "classes/josemmo-Verifactu-Models-Records-Record.html"
         },                {
+            "fqsen": "\\josemmo\\Verifactu\\Models\\Records\\Record\u003A\u003AfromXml\u0028\u0029",
+            "name": "fromXml",
+            "summary": "Import\u0020instance\u0020from\u0020XML\u0020element",
+            "url": "classes/josemmo-Verifactu-Models-Records-Record.html#method_fromXml"
+        },                {
             "fqsen": "\\josemmo\\Verifactu\\Models\\Records\\Record\u003A\u003AcalculateHash\u0028\u0029",
             "name": "calculateHash",
             "summary": "Calculate\u0020record\u0020hash",
@@ -450,6 +495,11 @@ Search.appendIndex(
             "name": "export",
             "summary": "Export\u0020record\u0020to\u0020XML",
             "url": "classes/josemmo-Verifactu-Models-Records-Record.html#method_export"
+        },                {
+            "fqsen": "\\josemmo\\Verifactu\\Models\\Records\\Record\u003A\u003ANS",
+            "name": "NS",
+            "summary": "XML\u0020namespace",
+            "url": "classes/josemmo-Verifactu-Models-Records-Record.html#constant_NS"
         },                {
             "fqsen": "\\josemmo\\Verifactu\\Models\\Records\\Record\u003A\u003A\u0024invoiceId",
             "name": "invoiceId",
@@ -711,6 +761,11 @@ Search.appendIndex(
             "summary": "Create\u0020new\u0020instance\u0020from\u0020XML\u0020response",
             "url": "classes/josemmo-Verifactu-Models-Responses-AeatResponse.html#method_from"
         },                {
+            "fqsen": "\\josemmo\\Verifactu\\Models\\Responses\\AeatResponse\u003A\u003ANS",
+            "name": "NS",
+            "summary": "Response\u0020XML\u0020namespace",
+            "url": "classes/josemmo-Verifactu-Models-Responses-AeatResponse.html#constant_NS"
+        },                {
             "fqsen": "\\josemmo\\Verifactu\\Models\\Responses\\AeatResponse\u003A\u003A\u0024csv",
             "name": "csv",
             "summary": "CSV\u0020asociado\u0020al\u0020env\u00EDo\u0020generado\u0020por\u0020AEAT",
@@ -860,6 +915,16 @@ Search.appendIndex(
             "name": "send",
             "summary": "Send\u0020invoicing\u0020records",
             "url": "classes/josemmo-Verifactu-Services-AeatClient.html#method_send"
+        },                {
+            "fqsen": "\\josemmo\\Verifactu\\Services\\AeatClient\u003A\u003ANS_SOAPENV",
+            "name": "NS_SOAPENV",
+            "summary": "SOAP\u0020envelope\u0020XML\u0020namespace",
+            "url": "classes/josemmo-Verifactu-Services-AeatClient.html#constant_NS_SOAPENV"
+        },                {
+            "fqsen": "\\josemmo\\Verifactu\\Services\\AeatClient\u003A\u003ANS_AEAT",
+            "name": "NS_AEAT",
+            "summary": "Client\u0020XML\u0020namespace",
+            "url": "classes/josemmo-Verifactu-Services-AeatClient.html#constant_NS_AEAT"
         },                {
             "fqsen": "\\josemmo\\Verifactu\\Services\\QrGenerator",
             "name": "QrGenerator",
