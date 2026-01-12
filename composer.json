@@ -30,9 +30,16 @@
     "require": {
         "php": ">=8.2",
         "guzzlehttp/guzzle": "^7.10",
-        "josemmo/uxml": "^0.2.0",
+        "josemmo/uxml": "dev-datacenter",
         "symfony/validator": "^6.4|^7.4|^8.0"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/datacentergl/uxml.git",
+            "comment": "Fork used by datacentergl to prevent high memory usage in UXML. The repository must be declared in the project that uses this library."
+        }
+    ],
     "config": {
         "process-timeout": 0,
         "sort-packages": true,
